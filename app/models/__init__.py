@@ -1,3 +1,3 @@
-from app.models.user import User
-from app.models.project import Project
-from app.models.task import Task, Tag
+from app.models.user import User  # noqa: F401
+from app.models.project import Project  # noqa: F401
+from app.models.task import Task, Tag  # noqa: F401

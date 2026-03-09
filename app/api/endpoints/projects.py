@@ -7,6 +7,7 @@ from app.api import deps
 
 router = APIRouter()
 
+
 @router.get("/", response_model=List[schemas.Project])
 async def read_projects(
     db: AsyncSession = Depends(deps.get_db),
@@ -14,8 +15,9 @@ async def read_projects(
     limit: int = 100,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    projects = await crud.get_multi(db, skip=skip, limit=limit)
+    projects = await crud.project.get_multi(db, skip=skip, limit=limit)
     return projects
+
 
 @router.post("/", response_model=schemas.Project)
 async def create_project(
@@ -24,8 +26,11 @@ async def create_project(
     project_in: schemas.ProjectCreate,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    project = await crud.create(db=db, obj_in=project_in, owner_id=current_user.id)
+    project = await crud.project.create(
+        db=db, obj_in=project_in, owner_id=current_user.id
+    )
     return project
+
 
 @router.get("/{id}", response_model=schemas.Project)
 async def read_project(
@@ -34,7 +39,7 @@ async def read_project(
     id: int,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    project = await crud.get(db=db, id=id)
+    project = await crud.project.get(db=db, id=id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     return project
